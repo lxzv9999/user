@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+用户名:<input type="text" id="user"><br />
+密码：<input type="text" id="pass"><br />
+<button id="btn">提交</button>
+<div id="div"></div>
+</body>
+</html>
+<script type="text/javascript">
+
+    btn.onclick = function(){
+        ajax({
+            url:'http://localhost:9999',
+            type:'post',
+            data:{
+                user:user.value,
+                pass:pass.value
+            },
+            success:function(data){
+                var data=JSON.parse(data)
+              
+                var arr="";
+                for(i in data){
+                    arr+="<p>"+data[i].user+"</p><p>"+data[i].pass+"</p>"
+                }
+                div.innerHTML=arr;
+
+
+            }
+        })
+    }
+
+
+
+
+
+
+    function ajax (option){
+        var xhr = new XMLHttpRequest();
+        var arr= []
+        for(var i in option.data){
+            arr.push(i+'='+option.data[i])
+        }
+        var str = '';
+        str=arr.join('&')
+        if(option.type == 'get'){
+            xhr.open('get',option.url+'?'+str,true);
+            xhr.send();
+        } else
+        if(option.type == 'post'){
+            xhr.open('post',option.url,true);
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xhr.send(str);
+        }
+        xhr.onreadystatechange = function (){
+            if(xhr.readyState == 4){
+                if(xhr.status >=200 && xhr.status < 300 || xhr.status == 304){
+                    option.success(xhr.responseText)
+                }else{
+                    console.log('链接服务错误')
+                }
+
+
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+</script>
